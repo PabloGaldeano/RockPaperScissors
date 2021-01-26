@@ -68,6 +68,16 @@ class GameServiceTest
         this.deleteGameAndExpectNoErrors(retrievedGame);
     }
 
+    @Test
+    void testRestartGame() throws GameNotFoundException
+    {
+        String gameID = this.gamesService.StartNewDefaultGame();
+        this.gamesService.generateNewRound(gameID);
+        this.gamesService.restartGame(gameID);
+        Game retrievedGame = this.getGameByIDAndExpectNoErrors(gameID);
+        Assertions.assertEquals(0,retrievedGame.getTotalAmountOfRounds(),"After reset, the rounds should be 0");
+    }
+
     private Game getGameByIDAndExpectNoErrors(String gameID)
     {
         try
@@ -90,4 +100,5 @@ class GameServiceTest
             fail("No exceptions should be thrown here");
         }
     }
+
 }

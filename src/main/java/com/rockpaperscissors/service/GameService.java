@@ -66,4 +66,9 @@ public class GameService
         return this.gamesDatabase.get(gameIdentifier).orElseThrow(() -> new GameNotFoundException(gameIdentifier));
     }
 
+    public void restartGame(String gameIdentifier)
+    {
+
+    }
+
 }

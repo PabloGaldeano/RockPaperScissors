@@ -18,19 +18,23 @@ import java.util.List;
 @AutoConfigureMockMvc
 class GameControllerTest extends ControllerTestGeneric
 {
-    protected MockHttpServletRequestBuilder getGameProgress;
-    protected MockHttpServletRequestBuilder createNewGame;
+    private MockHttpServletRequestBuilder getGameProgress;
+    private MockHttpServletRequestBuilder createNewGame;
+    private MockHttpServletRequestBuilder restartGame;
+    private MockHttpServletRequestBuilder createNewRound;
+
 
     public GameControllerTest()
     {
-        this.getGameProgress = MockMvcRequestBuilders.get("/games/");
-        this.getGameProgress = MockMvcRequestBuilders.post("/games/create");
+        this.createNewGame = MockMvcRequestBuilders.post("/game/create");
+
     }
 
     @Test
     void testGetGameProgressWithNoGameID() throws Exception
     {
-       this.executeMockPetitionAnExpectNotFoundError(this.getGameProgress);
+        this.buildPetitionsForGame("nothing");
+        this.executeMockPetitionAnExpectNotFoundError(this.getGameProgress);
     }
 
     @Test
@@ -39,7 +43,10 @@ class GameControllerTest extends ControllerTestGeneric
 
         // Creating the game
         SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewGame);
-        Assertions.assertTrue(petitionResponse.getContent() instanceof  String, "The returned value in the response should be a string");
+        Assertions.assertTrue(petitionResponse.getContent() instanceof String, "The returned value in the response should be a string");
+
+        String gameID = (String) petitionResponse.getContent();
+        this.buildPetitionsForGame(gameID);
 
         // Retrieving the progress of the just created game
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameProgress);
@@ -48,12 +55,38 @@ class GameControllerTest extends ControllerTestGeneric
     }
 
     @Test
-    void testRestartGame()
+    void testRestartGame() throws Exception
     {
+
+        // Creating the game
+        SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewGame);
+
+        String gameID = petitionResponse.getContent().toString();
+        this.buildPetitionsForGame(gameID);
+
+        petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewRound);
+        petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewRound);
+        Assertions.assertTrue(petitionResponse.getContent() instanceof List, "The returned content should be a list of rounds");
+
+        List<?> gameProgress = (List<?>) petitionResponse.getContent();
+
+        Assertions.assertEquals(1, gameProgress.size(), "The number of rounds should be one");
+        petitionResponse = this.executeMockPetitionAndExpectOK(this.restartGame);
+        this.testSuccessServiceResponseWithNullContent(petitionResponse);
+
+        petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameProgress);
+        Assertions.assertTrue(petitionResponse.getContent() instanceof List, "The returned content should be a list of rounds");
+
+        gameProgress = (List<?>) petitionResponse.getContent();
+        Assertions.assertEquals(0, gameProgress.size(), "The number of rounds should be one");
 
     }
 
 
-
-
+    private void buildPetitionsForGame(String gameID)
+    {
+        this.restartGame = MockMvcRequestBuilders.patch(String.format("/game/%s/restart", gameID));
+        this.createNewRound = MockMvcRequestBuilders.patch(String.format("/game/%s/newRound", gameID));
+        this.getGameProgress = MockMvcRequestBuilders.get(String.format("/game/%s", gameID));
+    }
 }

@@ -4,14 +4,11 @@ import com.rockpaperscissors.controller.communication.SystemResponse;
 import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
 import com.rockpaperscissors.service.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.websocket.server.PathParam;
-
-@RequestMapping("/games")
+@RequestMapping("/game")
 @RestController
 public class GameController
 {
@@ -24,20 +21,29 @@ public class GameController
     }
 
     @PostMapping(value = "/create", produces = "application/json")
-    public @ResponseBody SystemResponse createNewGame()
+    public @ResponseBody
+    SystemResponse createNewGame()
     {
-        return null;
+        return SystemResponse.generateSuccessResponse(this.gameService.StartNewDefaultGame());
     }
 
-    @PostMapping(value="/newRound", consumes = "application/json", produces = "application/json")
-    public @ResponseBody SystemResponse newRoundInGame(@RequestBody String gameID)
+    @PatchMapping(value = "{id}/newRound", produces = "application/json")
+    public @ResponseBody
+    SystemResponse newRoundInGame(@PathVariable("id") String gameID)
     {
-        return null;
+        try
+        {
+            return SystemResponse.generateSuccessResponse(this.gameService.generateNewRound(gameID));
+        } catch (GameNotFoundException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested game does not exists");
+        }
     }
 
 
-    @GetMapping(value="/{id}", produces = "application/json")
-    public @ResponseBody SystemResponse getGameProgress(@PathVariable("id") String gameID)
+    @GetMapping(value = "{id}", produces = "application/json")
+    public @ResponseBody
+    SystemResponse getGameProgress(@PathVariable("id") String gameID)
     {
         try
         {
@@ -49,9 +55,11 @@ public class GameController
         }
     }
 
-    @PostMapping(value="/restart", consumes = "application/json", produces = "application/json")
-    public @ResponseBody SystemResponse restartGame()
+    @PatchMapping(value = "{id}/restart", produces = "application/json")
+    public @ResponseBody  SystemResponse restartGame(@PathVariable("id") String gameID)
     {
-        return null;
+
+        this.gameService.restartGame(gameID);
+        return SystemResponse.generateSuccessResponse(null);
     }
 }

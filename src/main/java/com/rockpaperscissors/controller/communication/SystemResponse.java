@@ -1,5 +1,6 @@
 package com.rockpaperscissors.controller.communication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SystemResponse
@@ -49,6 +50,7 @@ public class SystemResponse
         return errorMessage;
     }
 
+    @JsonIgnore
     public boolean isExecutedSuccessfully()
     {
         return this.status == ResponseStatus.SUCCESS;
