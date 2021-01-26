@@ -1,9 +1,6 @@
 package com.rockpaperscissors.model.game;
 
-import com.rockpaperscissors.model.player.FixedMovementPlayer;
 import com.rockpaperscissors.model.player.Player;
-import com.rockpaperscissors.model.player.RandomMovementPlayer;
-import org.springframework.expression.spel.ast.NullLiteral;
 
 import java.util.ArrayList;
 import java.util.List;

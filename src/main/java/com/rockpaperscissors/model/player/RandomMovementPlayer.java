@@ -8,9 +8,8 @@ import java.security.SecureRandom;
  * This class implements the behaviour of a "regular player" in the game,
  * which is to select a random literal in the {@link MovementTypes} enumeration and
  * return it when {@link #performMovement()} is invoked.
- *
+ * <p>
  * This class follows the same principles and patterns as {@link FixedMovementPlayer}
- *
  */
 final public class RandomMovementPlayer extends Player
 {

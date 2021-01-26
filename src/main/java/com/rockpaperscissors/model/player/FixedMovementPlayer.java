@@ -6,11 +6,10 @@ import com.rockpaperscissors.model.game.MovementTypes;
  * This class implements the kind of player that will always select
  * the same {@link MovementTypes} for every round. Said movement will be
  * specified during construction time.
- *
+ * <p>
  * Also, and until specified otherwise, this class also follows
  * the immutable software pattern. Since there is no requirement
  * saying this class can change its movement at run-time.
- *
  */
 final public class FixedMovementPlayer extends Player
 {

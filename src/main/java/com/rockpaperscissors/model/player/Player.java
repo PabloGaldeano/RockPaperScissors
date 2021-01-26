@@ -1,18 +1,13 @@
 package com.rockpaperscissors.model.player;
 
-import com.rockpaperscissors.model.player.FixedMovementPlayer;
-import com.rockpaperscissors.model.player.RandomMovementPlayer;
-
-
 import com.rockpaperscissors.model.game.MovementTypes;
 
 /**
  * This is the class which models the behavior of the player,
  * for now it only contains the method to perform the movement.
- *
+ * <p>
  * This class should be sealed to prevent wrong classes to
  * inherit from this one in order to preserve the Liskov Principle.
- *
  */
 sealed public abstract class Player permits FixedMovementPlayer, RandomMovementPlayer
 {

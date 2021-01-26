@@ -1,7 +1,15 @@
 package com.rockpaperscissors.service;
 
 import com.rockpaperscissors.dao.game.IGamesDAO;
+import com.rockpaperscissors.exceptions.dao.RecordAlreadyExistsException;
+import com.rockpaperscissors.exceptions.dao.RecordNotFoundException;
+import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
+import com.rockpaperscissors.model.game.MovementTypes;
+import com.rockpaperscissors.model.game.Round;
+import com.rockpaperscissors.model.player.FixedMovementPlayer;
+import com.rockpaperscissors.model.player.RandomMovementPlayer;
+import com.rockpaperscissors.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -14,19 +22,45 @@ public class GameService
     @Qualifier("Memory")
     private IGamesDAO gamesDatabase;
 
-    public void generateNewRound(String gameIdentifier)
+    public Round generateNewRound(String gameIdentifier) throws GameNotFoundException
     {
-
+        Game selectedGame = this.getGameByIdentifier(gameIdentifier);
+        return selectedGame.playNewRound();
     }
 
     public String StartNewDefaultGame()
     {
-        return null;
+        String gameID = StringUtils.getRandomStringOfLength(32);
+
+        Game newGame = new Game(new RandomMovementPlayer(), new FixedMovementPlayer(MovementTypes.ROCK), gameID);
+
+        try
+        {
+            this.gamesDatabase.save(newGame);
+        } catch (RecordAlreadyExistsException e)
+        {
+            // Todo: Sequence generator to guarantee no duplicates are inserted
+            System.err.println(e.getMessage());
+        }
+
+        return gameID;
     }
 
-    public Game getGameByIdentifier(String gameIdentifier)
+    public void deleteGame(Game game) throws GameNotFoundException
     {
-        return null;
+        try
+        {
+            this.gamesDatabase.delete(game);
+        }
+        catch (RecordNotFoundException ex)
+        {
+            throw new GameNotFoundException(game);
+        }
+    }
+
+    public Game getGameByIdentifier(String gameIdentifier) throws GameNotFoundException
+    {
+        return this.gamesDatabase.get(gameIdentifier).orElseThrow(() -> new GameNotFoundException(gameIdentifier));
     }
 
 }
