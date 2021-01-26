@@ -18,7 +18,7 @@ class RandomMovementPlayerTest
 {
 
     /**
-     * This method will do a simple check to make sure the {@link RandomMovementPlayer#generateMovement()} does not
+     * This method will do a simple check to make sure the {@link RandomMovementPlayer#performMovement()} ()} does not
      * generate the same element over and ove again. In order to make sure the test won't fail due to randomness,
      * it is repeated 10 times and a total of 200 calls are made on each call.
      *
@@ -49,7 +49,7 @@ class RandomMovementPlayerTest
 
             for (; testingPoolSie >= 0; testingPoolSie--)
             {
-                testPool.add(playerToTest.generateMovement());
+                testPool.add(playerToTest.performMovement());
             }
 
             numberOfRocks += testPool.stream()
