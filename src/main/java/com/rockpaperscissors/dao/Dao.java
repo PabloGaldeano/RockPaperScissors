@@ -1,17 +1,18 @@
 package com.rockpaperscissors.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface Dao<T>
+public interface Dao<K,T>
 {
-    Optional<T> get(long id);
+    Optional<T> get(K id);
 
-    List<T> getAll();
+    Collection<T> getAll();
 
     void save(T t);
 
-    void update(T t, String[] params);
+    void update(K id, T t);
 
     void delete(T t);
 }

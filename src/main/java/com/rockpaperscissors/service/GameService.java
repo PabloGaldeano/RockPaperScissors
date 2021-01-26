@@ -19,7 +19,7 @@ public class GameService
 
     }
 
-    public String StartNewGame()
+    public String StartNewDefaultGame()
     {
         return null;
     }

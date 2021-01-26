@@ -18,7 +18,7 @@ class GameTest
     @BeforeEach
     public void testSetUp()
     {
-        this.gameToTest = new Game();
+        this.gameToTest = new Game(new FixedMovementPlayer(MovementTypes.ROCK), new FixedMovementPlayer(MovementTypes.PAPER), "test");
     }
 
     @Test
@@ -30,15 +30,15 @@ class GameTest
     @Test
     void testNewGameWithNulls()
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(null, null));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(null, new RandomMovementPlayer()));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(new RandomMovementPlayer(), null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(null, null, "test"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(null, new RandomMovementPlayer(), "test"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(new RandomMovementPlayer(), null, "test"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(new RandomMovementPlayer(), new RandomMovementPlayer(), null));
     }
 
     @Test
     void testNewRound()
     {
-        this.gameToTest = new Game(new FixedMovementPlayer(MovementTypes.ROCK), new FixedMovementPlayer(MovementTypes.PAPER));
         Round playedRound = this.gameToTest.playNewRound();
         this.testNumberOfRounds(1);
         Assertions.assertNotNull(playedRound, "The round generated should not be null");

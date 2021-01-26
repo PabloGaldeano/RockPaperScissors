@@ -3,16 +3,13 @@ package com.rockpaperscissors.dao.game;
 import com.rockpaperscissors.model.game.Game;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-@Repository(value = "Memory")
+@Repository("Memory")
 public class GamesMemoryDAO implements IGamesDAO
 {
 
-    private final Map<String, List<Game>> games;
+    private final Map<String, Game> games;
 
     public GamesMemoryDAO()
     {
@@ -20,15 +17,19 @@ public class GamesMemoryDAO implements IGamesDAO
     }
 
     @Override
-    public Optional<Game> get(long id)
+    public Optional<Game> get(String id)
     {
-        return Optional.empty();
+        if (id == null)
+        {
+            throw new IllegalArgumentException("The id of the game can not be null");
+        }
+        return Optional.ofNullable(this.games.get(id));
     }
 
     @Override
-    public List<Game> getAll()
+    public Collection<Game> getAll()
     {
-        return null;
+        return this.games.values();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class GamesMemoryDAO implements IGamesDAO
     }
 
     @Override
-    public void update(Game game, String[] params)
+    public void update(String id, Game game)
     {
 
     }
