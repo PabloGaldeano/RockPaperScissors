@@ -18,9 +18,12 @@ import org.springframework.stereotype.Service;
 public class GameService
 {
 
-    @Autowired
-    @Qualifier("Memory")
-    private IGamesDAO gamesDatabase;
+    private final IGamesDAO gamesDatabase;
+
+    public GameService(@Qualifier("Memory") IGamesDAO gamesDatabase)
+    {
+        this.gamesDatabase = gamesDatabase;
+    }
 
     public Round generateNewRound(String gameIdentifier) throws GameNotFoundException
     {

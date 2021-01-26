@@ -58,6 +58,11 @@ public class Game
         return this.gameRounds.size();
     }
 
+    public List<Round> getProgress()
+    {
+        return List.copyOf(this.gameRounds);
+    }
+
     public String getGameID()
     {
         return gameID;

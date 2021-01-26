@@ -33,4 +33,24 @@ public class SystemResponse
         response.status = ResponseStatus.FAILURE;
         return response;
     }
+
+    public ResponseStatus getStatus()
+    {
+        return status;
+    }
+
+    public Object getContent()
+    {
+        return content;
+    }
+
+    public String getErrorMessage()
+    {
+        return errorMessage;
+    }
+
+    public boolean isExecutedSuccessfully()
+    {
+        return this.status == ResponseStatus.SUCCESS;
+    }
 }
