@@ -2,8 +2,6 @@ package com.rockpaperscissors.dao.game;
 
 import com.rockpaperscissors.exceptions.dao.RecordAlreadyExistsException;
 import com.rockpaperscissors.exceptions.dao.RecordNotFoundException;
-import com.rockpaperscissors.exceptions.game.GameAlreadyExistException;
-import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
 import com.rockpaperscissors.model.game.MovementTypes;
 import com.rockpaperscissors.model.player.FixedMovementPlayer;
@@ -16,21 +14,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class GamesMemoryDAOTest
 {
     @Autowired
-    @Qualifier("Memory")
+    @Qualifier("GamesMemory")
     private IGamesDAO gamesDatabase;
 
     private Game testGame;
 
     public GamesMemoryDAOTest()
     {
-      this.testGame = new Game(new FixedMovementPlayer(MovementTypes.ROCK), new FixedMovementPlayer(MovementTypes.PAPER), "test");
+        this.testGame = new Game(new FixedMovementPlayer(MovementTypes.ROCK), new FixedMovementPlayer(MovementTypes.PAPER), "test");
 
     }
 
@@ -39,6 +35,9 @@ class GamesMemoryDAOTest
     {
         try
         {
+            // In here the exception is needed because there can be some test that do not insert
+            // elements in the DB or they deleted for some reason, hence this call has to succeed and not
+            // break the test for a record not found exception
             this.gamesDatabase.delete(this.testGame);
         } catch (RecordNotFoundException e)
         {
@@ -48,9 +47,9 @@ class GamesMemoryDAOTest
 
 
     @Test
-    void testInsert()
+    void testInsert() throws RecordAlreadyExistsException
     {
-        this.insertGameInDBAndExpectNoErrors();
+         this.gamesDatabase.save(this.testGame);
 
         Game fromDB = this.gamesDatabase.get(this.testGame.getGameID()).orElse(null);
 
@@ -64,19 +63,14 @@ class GamesMemoryDAOTest
     }
 
     @Test
-    void testDelete()
+    void testDelete() throws RecordNotFoundException, RecordAlreadyExistsException
     {
+        // Asserting there are no record in the database
         Assertions.assertThrows(RecordNotFoundException.class, () -> this.gamesDatabase.delete(this.testGame));
+        this.gamesDatabase.save(this.testGame);
 
-        this.insertGameInDBAndExpectNoErrors();
-
-        try
-        {
-            this.gamesDatabase.delete(this.testGame);
-        } catch (RecordNotFoundException e)
-        {
-            fail("No exception should be thrown here");
-        }
+        // Asserting we can delete the record with no exceptions
+        this.gamesDatabase.delete(this.testGame);
     }
 
     @Test
@@ -88,41 +82,15 @@ class GamesMemoryDAOTest
     }
 
     @Test
-    public void testNewRound()
-    {
-
-    }
-
-    @Test
-    public void testGetAll()
+    public void testGetAll() throws RecordAlreadyExistsException, RecordNotFoundException
     {
         Assertions.assertEquals(0, this.gamesDatabase.getAll().size());
 
-        this.insertGameInDBAndExpectNoErrors();
-
+        this.gamesDatabase.save(this.testGame);
         Assertions.assertEquals(1, this.gamesDatabase.getAll().size());
 
-        try
-        {
-            this.gamesDatabase.delete(this.testGame);
-        } catch (RecordNotFoundException e)
-        {
-            fail("No exception should be thrown here");
-        }
 
+        this.gamesDatabase.delete(this.testGame);
         Assertions.assertEquals(0, this.gamesDatabase.getAll().size());
-    }
-
-    // ######################### UTILITY METHODS #########################
-
-    private void insertGameInDBAndExpectNoErrors()
-    {
-        try
-        {
-            this.gamesDatabase.save(this.testGame);
-        } catch (RecordAlreadyExistsException e)
-        {
-            fail("No exception should be thrown here");
-        }
     }
 }

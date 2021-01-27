@@ -6,13 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class FixedMovementPlayerTest
 {
 
+    /**
+     * This test will make use of the JUnit API to make sure the {@link FixedMovementPlayer}
+     * always return the same movement regardless the type specified during construction.
+     *
+     * @param playerFixedMovement The movement to construct the player with
+     */
     @ParameterizedTest
     @EnumSource(MovementTypes.class)
     void performMovement(MovementTypes playerFixedMovement)

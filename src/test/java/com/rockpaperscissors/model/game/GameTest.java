@@ -6,10 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class GameTest
 {
 
@@ -21,12 +17,18 @@ class GameTest
         this.gameToTest = new Game(new FixedMovementPlayer(MovementTypes.ROCK), new FixedMovementPlayer(MovementTypes.PAPER), "test");
     }
 
+    //<editor-fold desc="Tests">
     @Test
     void testInit()
     {
+        // Checking initial state
         Assertions.assertEquals(0, this.gameToTest.getTotalAmountOfRounds(), "The total amount of rounds at the start should be 0");
     }
 
+    /**
+     * This method will test the construction of a game using a sequences of
+     * arguments where at least one will be null.
+     */
     @Test
     void testNewGameWithNulls()
     {
@@ -39,8 +41,13 @@ class GameTest
     @Test
     void testNewRound()
     {
+        // Generating new round
         Round playedRound = this.gameToTest.playNewRound();
-        this.testNumberOfRounds(1);
+
+        // Checking the state has changed
+        this.checkNumberOfRounds(1);
+
+        // Checking the returned round matches the test one
         Assertions.assertNotNull(playedRound, "The round generated should not be null");
         Round resultRound = new Round(RoundOutcome.PLAYER2, MovementTypes.ROCK, MovementTypes.PAPER);
         Assertions.assertEquals(resultRound, playedRound, "The resulting round from the game should be equal to the one specified in the test");
@@ -49,16 +56,22 @@ class GameTest
     @Test
     void testResetGame()
     {
+        // Generating new round and checking the state
         this.gameToTest.playNewRound();
-        this.testNumberOfRounds(1);
+        this.checkNumberOfRounds(1);
+
+        // Restarting the game and checking the state
         this.gameToTest.resetGame();
-        this.testNumberOfRounds(0);
+        this.checkNumberOfRounds(0);
 
     }
+    //</editor-fold>
 
-    private void testNumberOfRounds( int expectedRounds)
+    //<editor-fold desc="Checker methods">
+    private void checkNumberOfRounds(int expectedRounds)
     {
         Assertions.assertEquals(expectedRounds, this.gameToTest.getTotalAmountOfRounds(), "The total amount of rounds should be 1");
     }
+    //</editor-fold>
 
 }

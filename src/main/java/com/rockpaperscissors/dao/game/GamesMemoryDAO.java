@@ -10,16 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Repository("Memory")
+/**
+ * This is a specific implementation of {@link IGamesDAO} where the entities
+ * will be saved in memory
+ */
+@Repository("GamesMemory")
 public class GamesMemoryDAO implements IGamesDAO
 {
 
-    private final Map<String, Game> games;
-
-    public GamesMemoryDAO()
-    {
-        this.games = new HashMap<>();
-    }
+    private final Map<String, Game> games= new HashMap<>();
 
     @Override
     public Optional<Game> get(String id)

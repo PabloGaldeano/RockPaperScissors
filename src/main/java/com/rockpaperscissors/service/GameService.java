@@ -9,8 +9,6 @@ import com.rockpaperscissors.model.game.MovementTypes;
 import com.rockpaperscissors.model.game.Round;
 import com.rockpaperscissors.model.player.FixedMovementPlayer;
 import com.rockpaperscissors.model.player.RandomMovementPlayer;
-import com.rockpaperscissors.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,7 @@ public class GameService
 
     private final IGamesDAO gamesDatabase;
 
-    public GameService(@Qualifier("Memory") IGamesDAO gamesDatabase)
+    public GameService(@Qualifier("GamesMemory") IGamesDAO gamesDatabase)
     {
         this.gamesDatabase = gamesDatabase;
     }
@@ -32,7 +30,6 @@ public class GameService
         Game selectedGame = this.getGameByIdentifier(gameIdentifier);
         return selectedGame.playNewRound();
     }
-
     public String StartNewDefaultGame()
     {
         String gameID = UUID.randomUUID().toString();
@@ -56,8 +53,7 @@ public class GameService
         try
         {
             this.gamesDatabase.delete(game);
-        }
-        catch (RecordNotFoundException ex)
+        } catch (RecordNotFoundException ex)
         {
             throw new GameNotFoundException(game);
         }
