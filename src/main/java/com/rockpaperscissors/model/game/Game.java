@@ -1,5 +1,6 @@
 package com.rockpaperscissors.model.game;
 
+import com.rockpaperscissors.dto.GameProgressDTO;
 import com.rockpaperscissors.model.player.Player;
 
 import java.util.ArrayList;
@@ -58,9 +59,9 @@ public class Game
         return this.gameRounds.size();
     }
 
-    public List<Round> getProgress()
+    public GameProgressDTO getProgress()
     {
-        return List.copyOf(this.gameRounds);
+        return new GameProgressDTO(this.gameRounds);
     }
 
     public String getGameID()

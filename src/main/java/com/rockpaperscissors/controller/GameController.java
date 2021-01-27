@@ -1,9 +1,11 @@
 package com.rockpaperscissors.controller;
 
 import com.rockpaperscissors.controller.communication.SystemResponse;
+import com.rockpaperscissors.dto.GameProgressDTO;
 import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
 import com.rockpaperscissors.service.GameService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,8 +60,14 @@ public class GameController
     @PatchMapping(value = "{id}/restart", produces = "application/json")
     public @ResponseBody  SystemResponse restartGame(@PathVariable("id") String gameID)
     {
+        try
+        {
+            this.gameService.restartGame(gameID);
+            return SystemResponse.generateSuccessResponse(null);
 
-        this.gameService.restartGame(gameID);
-        return SystemResponse.generateSuccessResponse(null);
+        } catch (GameNotFoundException e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested game does not exists");
+        }
     }
 }

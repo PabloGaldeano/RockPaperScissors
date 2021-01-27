@@ -9,7 +9,7 @@ import com.rockpaperscissors.model.game.MovementTypes;
  * <p>
  * Also, and until specified otherwise, this class also follows
  * the immutable software pattern. Since there is no requirement
- * saying this class can change its movement at run-time.
+ * saying this class can change its movement at run-time nor it has subtypes.
  */
 final public class FixedMovementPlayer extends Player
 {
