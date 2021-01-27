@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class GameService
 {
@@ -33,7 +35,7 @@ public class GameService
 
     public String StartNewDefaultGame()
     {
-        String gameID = StringUtils.getRandomStringOfLength(32);
+        String gameID = UUID.randomUUID().toString();
 
         Game newGame = new Game(new RandomMovementPlayer(), new FixedMovementPlayer(MovementTypes.ROCK), gameID);
 

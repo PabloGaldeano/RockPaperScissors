@@ -26,39 +26,33 @@ public abstract class ControllerTestGeneric
 
     public void executeMockPetitionAnExpectNotFoundError(MockHttpServletRequestBuilder petitionToExecute) throws Exception
     {
-        MvcResult petitionResult = this.mockMvc.perform(petitionToExecute).andExpect(MockMvcResultMatchers.status().is4xxClientError()).andReturn();
+        MvcResult petitionResult = this.mockMvc.perform(petitionToExecute)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError()).andReturn();
         Assertions.assertEquals(404, petitionResult.getResponse().getStatus());
     }
 
 
     protected SystemResponse executeMockPetitionAndExpectOK(MockHttpServletRequestBuilder builder) throws Exception
     {
-        ResultActions petitionResult = this.mockMvc.perform(builder);
-        this.checkMvcResponse(petitionResult);
-        MvcResult mvcResult = petitionResult.andExpect(MockMvcResultMatchers.status().isOk()).andDo(print()).andReturn();
+        MvcResult mvcResult = this.mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
         return this.getServiceResponseFromResult(mvcResult);
     }
 
-    protected void writeStringInRequest(MockHttpServletRequestBuilder destinationBuilder, String toWrite)
-    {
-        destinationBuilder.content(toWrite);
-    }
+
 
     protected SystemResponse getServiceResponseFromResult(MvcResult result) throws Exception
     {
         return mapper.readValue(result.getResponse().getContentAsString(), SystemResponse.class);
     }
 
-    public void testSuccessServiceResponseWithNullContent(SystemResponse response)
+    public void checkSuccessSystemResponseWithNullContent(SystemResponse response)
     {
         Assertions.assertTrue(response.isExecutedSuccessfully(),"The success flag is false and it shouldn't!");
         Assertions.assertNull(response.getContent(),"The content of the response is not null, and it should be null");
     }
 
-    protected void checkMvcResponse(ResultActions mockMvcResult)
-    {
-      //  mockMvcResult.andExpect(MockMvcResultMatchers.content().contentType("application/json"));
-    }
 
 
 }
