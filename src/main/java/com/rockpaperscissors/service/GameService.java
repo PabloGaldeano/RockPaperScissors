@@ -35,7 +35,7 @@ public class GameService
         Game selectedGame = this.getGameByIdentifier(gameIdentifier);
         Round round = selectedGame.playNewRound();
         this.statistics.countNewRound(round);
-        return selectedGame.playNewRound();
+        return round;
     }
     public String StartNewDefaultGame()
     {

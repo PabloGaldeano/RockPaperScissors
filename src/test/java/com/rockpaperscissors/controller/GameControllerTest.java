@@ -167,18 +167,11 @@ class GameControllerTest extends ControllerTestGeneric
      */
     private List<?> checkAndRetrieveGameProgressFromResponse(SystemResponse response)
     {
-        // Checking if the content is a map
-        Assertions.assertTrue(response.content() instanceof Map, "The content should be a map");
-        Map<String, Object> responseContent = (Map<String, Object>) response.content();
-
-        // Checking if the response content contains the game progress key
-        Assertions.assertTrue(responseContent.containsKey(GAME_PROGRESS.getKeyName()));
-
         // Checking of the value under the game progress key is a list
-        Assertions.assertTrue(responseContent.get(GAME_PROGRESS.getKeyName()) instanceof List, "Inside the content there should be a key holding the game progress");
+        Assertions.assertTrue(response.content() instanceof List, "Inside the content there should be a key holding the game progress");
 
         // Returning the game progress as a list
-        return (List<?>) responseContent.get(GAME_PROGRESS.getKeyName());
+        return (List<?>) response.content();
     }
     //</editor-fold>
 

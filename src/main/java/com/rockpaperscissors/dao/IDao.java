@@ -14,7 +14,7 @@ import java.util.Optional;
  * @param <K> The type of the key
  * @param <T> The type of the entity
  */
-public interface Dao<K, T>
+public interface IDao<K, T>
 {
     Optional<T> get(K id);
 

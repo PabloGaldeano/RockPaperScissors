@@ -1,11 +1,11 @@
 package com.rockpaperscissors.model.game;
 
-import com.rockpaperscissors.dto.GameProgressDTO;
 import com.rockpaperscissors.model.game.round.Round;
 import com.rockpaperscissors.model.game.round.RoundOutcome;
 import com.rockpaperscissors.model.player.IPlayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -97,15 +97,15 @@ public class Game
     }
 
     /**
-     * This getter returns an instance of {@link GameProgressDTO} which is an
+     * This getter returns an instance of immutable {@link List} which is an
      * immutable object representing the progress of the game. It is done in such
      * way to avoid the state of the game being modified externally.
      *
-     * @return The immutable object with the game progress inside
+     * @return The immutable list with the game progress inside
      */
-    public GameProgressDTO getProgress()
+    public List<Round> getProgress()
     {
-        return new GameProgressDTO(this.gameRounds);
+        return Collections.unmodifiableList(this.gameRounds);
     }
 
     public String getGameID()
