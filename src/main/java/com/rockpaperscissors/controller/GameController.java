@@ -113,6 +113,7 @@ public class GameController
         });
     }
 
+
     /**
      * This method will act as a common exception handler since all of the exception risen by the
      * service are handled in the exact same way. The existence of this method will prevent
