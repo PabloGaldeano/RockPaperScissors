@@ -1,7 +1,7 @@
 package com.rockpaperscissors.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.rockpaperscissors.model.game.Round;
+import com.rockpaperscissors.model.game.round.Round;
 
 import java.util.List;
 import java.util.Objects;

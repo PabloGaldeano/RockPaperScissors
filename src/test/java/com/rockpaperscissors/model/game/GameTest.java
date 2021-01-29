@@ -1,5 +1,7 @@
 package com.rockpaperscissors.model.game;
 
+import com.rockpaperscissors.model.game.round.Round;
+import com.rockpaperscissors.model.game.round.RoundOutcome;
 import com.rockpaperscissors.model.player.FixedMovementPlayer;
 import com.rockpaperscissors.model.player.RandomMovementPlayer;
 import org.junit.jupiter.api.Assertions;

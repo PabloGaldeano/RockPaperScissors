@@ -11,7 +11,7 @@ import java.security.SecureRandom;
  * <p>
  * This class follows the same principles and patterns as {@link FixedMovementPlayer}
  */
-final public class RandomMovementPlayer extends Player
+final public class RandomMovementPlayer implements IPlayer
 {
     /**
      * This is the random generator to be used.

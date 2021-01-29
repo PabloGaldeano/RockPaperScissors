@@ -1,14 +1,16 @@
 package com.rockpaperscissors.model.game;
 
 import com.rockpaperscissors.dto.GameProgressDTO;
-import com.rockpaperscissors.model.player.Player;
+import com.rockpaperscissors.model.game.round.Round;
+import com.rockpaperscissors.model.game.round.RoundOutcome;
+import com.rockpaperscissors.model.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This is the class that models assembles a rock-paper-scissors game. It consists
- * of two implementations of the class {@link Player}, a list of {@link Round}, its
+ * of two implementations of the class {@link IPlayer}, a list of {@link Round}, its
  * unique identifier and several methods to access its properties as well as one method
  * {@link #playNewRound()} responsible of generating a new round.
  *
@@ -20,8 +22,8 @@ public class Game
 
     private final List<Round> gameRounds;
 
-    private final Player playerOne;
-    private final Player playerTwo;
+    private final IPlayer playerOne;
+    private final IPlayer playerTwo;
 
     private final String gameID;
 
@@ -34,7 +36,7 @@ public class Game
      * @param gameID The ID of the game, can not be null
      * @throws IllegalArgumentException when one of its parameter is null
      */
-    public Game(Player playerOne, Player playerTwo, String gameID)
+    public Game(IPlayer playerOne, IPlayer playerTwo, String gameID)
     {
         if (playerOne == null || playerTwo == null)
         {
@@ -59,7 +61,7 @@ public class Game
 
     /**
      * This method will evaluate the movements performed by each player, which are
-     * the result of both calls to {@link Player#performMovement()} and
+     * the result of both calls to {@link IPlayer#performMovement()} and
      * apply the game rules to see who wins or if it was a tie. As a bonus,
      * it returns the just created {@link Round} for reference after it has been
      * added to {@link #gameRounds}

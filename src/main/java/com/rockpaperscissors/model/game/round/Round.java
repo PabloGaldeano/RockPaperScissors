@@ -1,6 +1,7 @@
-package com.rockpaperscissors.model.game;
+package com.rockpaperscissors.model.game.round;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rockpaperscissors.model.game.MovementTypes;
 
 import java.util.Objects;
 

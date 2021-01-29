@@ -2,7 +2,7 @@ package com.rockpaperscissors.service;
 
 import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
-import com.rockpaperscissors.model.game.Round;
+import com.rockpaperscissors.model.game.round.Round;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ class GameServiceTest
 
         // Deleting the game and checking it does not exist
         this.gamesService.deleteGame(retrievedGame);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> this.gamesService.getGameByIdentifier(retrievedGame.getGameID()));
+        Assertions.assertThrows(GameNotFoundException.class, () -> this.gamesService.getGameByIdentifier(retrievedGame.getGameID()));
 
     }
 

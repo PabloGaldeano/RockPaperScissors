@@ -26,6 +26,7 @@ import java.util.concurrent.Callable;
  * same exception will be thrown but with the code {@link HttpStatus#I_AM_A_TEAPOT}, each one of these will
  * contain a descriptive message.
  */
+@CrossOrigin("*")
 @RequestMapping(value = "/game", produces = "application/json")
 @RestController
 public class GameController

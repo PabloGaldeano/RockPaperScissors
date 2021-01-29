@@ -6,7 +6,7 @@ import com.rockpaperscissors.exceptions.dao.RecordNotFoundException;
 import com.rockpaperscissors.exceptions.game.GameNotFoundException;
 import com.rockpaperscissors.model.game.Game;
 import com.rockpaperscissors.model.game.MovementTypes;
-import com.rockpaperscissors.model.game.Round;
+import com.rockpaperscissors.model.game.round.Round;
 import com.rockpaperscissors.model.player.FixedMovementPlayer;
 import com.rockpaperscissors.model.player.RandomMovementPlayer;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,4 +1,4 @@
-package com.rockpaperscissors.model.game;
+package com.rockpaperscissors.model.game.round;
 
 /**
  * This is an enumeration listing all the different possible
