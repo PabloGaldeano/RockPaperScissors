@@ -35,5 +35,6 @@ since they are very simple and furthermore, in order to make these changes there
 Also, in order to maintain a memory state of the system, I have implemented a dummy version of `DAO` in order to abstract
 the service of the persistence layer.
 
-In this case, no DTO is used since I have not seen any applicable scenario.
+In this case, no DTO is used since I have not seen any applicable scenario, because these objects are meant to be
+as a package in order to send an information compound of different entities in order to save time of making more calls.
 
