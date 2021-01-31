@@ -32,6 +32,10 @@ class FixedMovementPlayerTest
         }
     }
 
+    /**
+     * Method to test if an  {@link IllegalArgumentException} is thrown when constructing the
+     * player will null params.
+     */
     @Test
     void checkConstructionWithNullArgs()
     {

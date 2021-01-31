@@ -1,42 +1,38 @@
 package com.rockpaperscissors.controller;
 
 import com.rockpaperscissors.controller.communication.SystemResponse;
-import com.rockpaperscissors.controller.generic.ControllerTestGeneric;
-import static  com.rockpaperscissors.controller.utils.GameResponseContentKeys.*;
+import com.rockpaperscissors.controller.generic.GameControllerTestGeneric;
+import com.rockpaperscissors.controller.utils.GameResponseContentKeys;
+import com.rockpaperscissors.utils.EnumerationCheckingUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * This class will test the different methods of the {@link GameController}, in order
- * to make the task easier, it will inherit form {@link ControllerTestGeneric} to make use
+ * to make the task easier, it will inherit form {@link GameControllerTestGeneric} to make use
  * of its methods.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class GameControllerTest extends ControllerTestGeneric
+class GameControllerTest extends GameControllerTestGeneric
 {
-    private final MockHttpServletRequestBuilder createNewGame;
-    private MockHttpServletRequestBuilder getGameProgress;
-    private MockHttpServletRequestBuilder restartGame;
-    private MockHttpServletRequestBuilder createNewRound;
-
-
-    public GameControllerTest()
-    {
-        this.createNewGame = MockMvcRequestBuilders.post("/game/create");
-    }
 
     //<editor-fold desc="Tests">
+
+    /**
+     * Method used to test out the 404 error that should be thrown when accessing a non
+     * existing resource (game)
+     *
+     * @throws Exception Thrown when something unexpected happens.
+     */
     @Test
     void testPetitionsWithNonExistingGame() throws Exception
     {
@@ -47,6 +43,13 @@ class GameControllerTest extends ControllerTestGeneric
         this.executeMockPetitionAnExpectNotFoundError(this.restartGame);
     }
 
+    /**
+     * Tis method will perform the create new game and get game progress in order
+     * to make sure the game is successfully created and the progress is returned in
+     * the appropriate format.
+     *
+     * @throws Exception Thrown when something unexpected happens.
+     */
     @Test
     void testCreateNewGameAndGetCreatedGame() throws Exception
     {
@@ -59,14 +62,17 @@ class GameControllerTest extends ControllerTestGeneric
         String gameID = (String) petitionResponse.content();
         this.buildPetitionsForGame(gameID);
 
-        // Generate a new round for the created game
-        this.executeMockPetitionAndExpectOK(this.createNewRound);
-
         // Retrieving the game progress and checking its integrity
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameProgress);
-        this.assertGameProgressIntegrityAndNumberOfRoundsFromResponse(petitionResponse, 1);
+        this.assertGameProgressIntegrityAndNumberOfRoundsFromResponse(petitionResponse, 0);
     }
 
+    /**
+     * Method used to test if the create new round call returns the data in the way it is meant to by checking
+     * if within the content of the response lies all the information of the round.
+     *
+     * @throws Exception Thrown when something unexpected happens.
+     */
     @Test
     void testCreateNewRound() throws Exception
     {
@@ -80,9 +86,16 @@ class GameControllerTest extends ControllerTestGeneric
         Assertions.assertTrue(response.content() instanceof Map, "The content should be a map");
 
         // Checking the round integrity
-        this.assertRoundInformationIntegrity((Map<String, String>) response.content());
+        EnumerationCheckingUtils.checkIfEnumerationLiteralsAreInMap((Map<?, ?>) response.content(), GameResponseContentKeys.values());
     }
 
+    /**
+     * This method will create a game, add a new round to it and then restart it. All this process is done
+     * through different requests and also, in between each step the integrity of the data is
+     * checked in order to make sure the information will arrive to the clients the way it is meant to.
+     *
+     * @throws Exception Thrown when something unexpected happened.
+     */
     @Test
     void testRestartGame() throws Exception
     {
@@ -110,15 +123,15 @@ class GameControllerTest extends ControllerTestGeneric
     //<editor-fold desc="Checker methods">
 
     /**
-     * This method will invoke {@link #assertRoundInformationIntegrity(Map)} in order to check
+     * This method will invoke {@link EnumerationCheckingUtils#checkIfEnumerationLiteralsAreInMap(Map, Enum[])} in order to check
      * the information of every round and also it will check if the number of rounds within
      * the game progress are equal to the amount given by parameter. It is worth mentioning
      * the fact of checking the integrity of the game progress includes the checking of
      * the integrity of each round within.
-     *
+     * <p>
      * The information to check will be extracted from the system response
      *
-     * @param response The response to extract the data from
+     * @param response       The response to extract the data from
      * @param numberOfRounds The number of rounds the progress should have
      */
     private void assertGameProgressIntegrityAndNumberOfRoundsFromResponse(SystemResponse response, int numberOfRounds)
@@ -136,32 +149,18 @@ class GameControllerTest extends ControllerTestGeneric
 
             // Checking said element is a map
             Assertions.assertTrue(roundElement instanceof Map, "The element should be a map");
-            Map<String, String> roundData = (Map<String, String>) roundElement;
+            Map<?, ?> roundData = (Map<?, ?>) roundElement;
 
             // Invoking the method to check the round integrity
-            this.assertRoundInformationIntegrity(roundData);
+            EnumerationCheckingUtils.checkIfEnumerationLiteralsAreInMap(roundData, GameResponseContentKeys.values());
         }
-    }
-
-    /**
-     * This method will check if the round information follows the standard, which means:
-     * - There should be only 3 keys within the map
-     * - Said keys should be, result, player_one_movement and, player_two_movement
-     *
-     * @param roundData The round data to check
-     */
-    private void assertRoundInformationIntegrity(Map<String, String> roundData)
-    {
-        Assertions.assertEquals(3, roundData.keySet().size(), "There should be only 3 keys in this map");
-        Assertions.assertTrue(roundData.containsKey(ROUND_RESULT.getKeyName()), "There should be a result key indicating the outcome of the round");
-        Assertions.assertTrue(roundData.containsKey(ROUND_PLAYER_ONE_MOVEMENT.getKeyName()), "There should be a result key indicating the movement of the first player");
-        Assertions.assertTrue(roundData.containsKey(ROUND_PLAYER_TWO_MOVEMENT.getKeyName()), "There should be a result key indicating the movement of the second player");
     }
 
     /**
      * This method will retrieve the content of the response and it will check its integrity.
      * This process consist on first checking if the content is a {@link Map} then, checking
      * if the key 'gameProgress' and the value of that key is a {@link List}.
+     *
      * @param response The response to retrieve the data
      * @return The list representing the game progress
      */
@@ -175,34 +174,4 @@ class GameControllerTest extends ControllerTestGeneric
     }
     //</editor-fold>
 
-    //<editor-fold desc="Helper methods">
-
-    /**
-     * It is a common operation to create the game and then build the petitions for it in order to execute
-     * subsequent operations, it is not included in the setUp since not all of the calls need a game
-     * created.
-     *
-     * @throws Exception In case something goes wrong
-     */
-    private void createNewGameAndBuildPetitions() throws Exception
-    {
-        SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewGame);
-
-        String gameID = petitionResponse.content().toString();
-        this.buildPetitionsForGame(gameID);
-    }
-
-    /**
-     * This method will parametrize all the mock petitions in order to point to the
-     * game resource identified by the supplied id
-     *
-     * @param gameID The ID of the game
-     */
-    private void buildPetitionsForGame(String gameID)
-    {
-        this.restartGame = MockMvcRequestBuilders.patch(String.format("/game/%s/restart", gameID));
-        this.createNewRound = MockMvcRequestBuilders.patch(String.format("/game/%s/newRound", gameID));
-        this.getGameProgress = MockMvcRequestBuilders.get(String.format("/game/%s", gameID));
-    }
-    //</editor-fold>
 }

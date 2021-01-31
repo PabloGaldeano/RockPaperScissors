@@ -6,19 +6,19 @@ package com.rockpaperscissors.controller.utils;
  */
 public enum GameResponseContentKeys
 {
-    GAME_PROGRESS("gameProgress"),
     ROUND_PLAYER_ONE_MOVEMENT("player_one_movement"),
     ROUND_PLAYER_TWO_MOVEMENT("player_two_movement"),
     ROUND_RESULT("result");
+
+    private final String keyName;
 
     GameResponseContentKeys(String keyName)
     {
         this.keyName = keyName;
     }
 
-    private final String keyName;
-
-    public String getKeyName()
+    @Override
+    public String toString()
     {
         return keyName;
     }

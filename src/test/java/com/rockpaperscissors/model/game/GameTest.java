@@ -8,9 +8,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * This class will test out all the logic within the Game. Like the exceptions thrown
+ * when constructing a new game, the state change when generating a new round etc...
+ */
 class GameTest
 {
 
+    /**
+     * The game used to invoke the operations on.
+     */
     private Game gameToTest;
 
     @BeforeEach
@@ -20,6 +27,10 @@ class GameTest
     }
 
     //<editor-fold desc="Tests">
+
+    /**
+     * Method to make sure the size of the round list is 0 when the game gets created
+     */
     @Test
     void testInit()
     {
@@ -40,6 +51,12 @@ class GameTest
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Game(new RandomMovementPlayer(), new RandomMovementPlayer(), null));
     }
 
+    /**
+     * This method will test out if the size of the progress list
+     * grows according with the numbers of calls performed to {@link Game#playNewRound()}
+     * It will also construct a new round to test out the round data
+     * contains the information according to the game rules
+     */
     @Test
     void testNewRound()
     {
@@ -47,7 +64,7 @@ class GameTest
         Round playedRound = this.gameToTest.playNewRound();
 
         // Checking the state has changed
-        this.checkNumberOfRounds(1);
+        this.assertNumberOfRounds(1);
 
         // Checking the returned round matches the test one
         Assertions.assertNotNull(playedRound, "The round generated should not be null");
@@ -55,22 +72,31 @@ class GameTest
         Assertions.assertEquals(resultRound, playedRound, "The resulting round from the game should be equal to the one specified in the test");
     }
 
+    /**
+     * Method to test if the progress data is cleared when invoking the reset method.
+     */
     @Test
     void testResetGame()
     {
         // Generating new round and checking the state
         this.gameToTest.playNewRound();
-        this.checkNumberOfRounds(1);
+        this.assertNumberOfRounds(1);
 
         // Restarting the game and checking the state
         this.gameToTest.resetGame();
-        this.checkNumberOfRounds(0);
+        this.assertNumberOfRounds(0);
 
     }
     //</editor-fold>
 
     //<editor-fold desc="Checker methods">
-    private void checkNumberOfRounds(int expectedRounds)
+
+    /**
+     * Method used to assert if the number of rounds inside the game is the one given by parameter
+     *
+     * @param expectedRounds The number of rounds that should be inside the game
+     */
+    private void assertNumberOfRounds(int expectedRounds)
     {
         Assertions.assertEquals(expectedRounds, this.gameToTest.getTotalAmountOfRounds(), "The total amount of rounds should be 1");
     }

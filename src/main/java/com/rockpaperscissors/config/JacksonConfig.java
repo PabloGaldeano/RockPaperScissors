@@ -20,7 +20,7 @@ public class JacksonConfig
     public ObjectMapper objectMapper()
     {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
 

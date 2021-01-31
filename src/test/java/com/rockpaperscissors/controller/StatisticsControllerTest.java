@@ -1,8 +1,9 @@
 package com.rockpaperscissors.controller;
 
 import com.rockpaperscissors.controller.communication.SystemResponse;
-import com.rockpaperscissors.controller.generic.ControllerTestGeneric;
+import com.rockpaperscissors.controller.generic.GameControllerTestGeneric;
 import com.rockpaperscissors.controller.utils.StatisticsResponseKeys;
+import com.rockpaperscissors.utils.EnumerationCheckingUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,98 +14,81 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Map;
+
+/**
+ * This class will test out the result of the request to the
+ * {@link StatisticsController} in order to check if the information
+ * is being sent properly.
+ * <p>
+ * Same as the rest of the test, if an exception is thrown the test should fail.
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class StatisticsControllerTest extends ControllerTestGeneric
+class StatisticsControllerTest extends GameControllerTestGeneric
 {
-
-    private final MockHttpServletRequestBuilder createNewGame;
-    private MockHttpServletRequestBuilder createNewRound;
     private MockHttpServletRequestBuilder getGameStatistics;
-    private MockHttpServletRequestBuilder restartGame;
-
 
     StatisticsControllerTest()
     {
-        this.createNewGame = MockMvcRequestBuilders.post("/game/create");
+        super();
         this.getGameStatistics = MockMvcRequestBuilders.get("/statistics");
     }
 
+    /**
+     * This method will make use of the mock requests in order to create a game, add new rounds
+     * and check if the statistics follows the business logic.
+     *
+     * @throws Exception Thrown if something goes wrong.
+     */
     @Test
     void getStatistics() throws Exception
     {
+        // Creating a new game and adding a newround
         this.createNewGameAndBuildPetitions();
         this.executeMockPetitionAndExpectOK(this.createNewRound);
 
         // Retrieving the game progress and checking its integrity
         SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
-        Map<String,Integer> statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
+        Map<?, ?> statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-        int  numberOfRounds = statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName());
+        // Retrieving the already existing number of rounds in order to build the expected number after the future modifications
+        int expectedNumberOfRounds = (int) statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.toString()) + 1;
 
+        // Creating a new game and adding a new round
         this.createNewGameAndBuildPetitions();
         this.executeMockPetitionAndExpectOK(this.createNewRound);
 
+        // Retrieving the statistics
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
         statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-        numberOfRounds++;
+        // Asserting the number of rounds is the expected one
+        Assertions.assertEquals(expectedNumberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.toString()), "There should be only " + expectedNumberOfRounds + " round(s)");
 
-        Assertions.assertEquals(numberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
-
+        // Restarting the game and making sure the statistics haven't changed.
         this.executeMockPetitionAndExpectOK(this.restartGame);
-
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
         statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-        Assertions.assertEquals(numberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
+        Assertions.assertEquals(expectedNumberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.toString()), "There should be only " + expectedNumberOfRounds + " round(s)");
 
     }
+
 
     /**
-     * It is a common operation to create the game and then build the petitions for it in order to execute
-     * subsequent operations, it is not included in the setUp since not all of the calls need a game
-     * created.
+     * This method will check and return the object representing the statistics. Basically, it will check
+     * the content of the system response is a map (a.k.a JSON object) by asserting if the number of keys
+     * is the expected ones and also asserting all the keys are inside the deserialized object.
      *
-     * @throws Exception In case something goes wrong
+     * @param response Map representing the statistics.
+     * @return The map containing the information about the statistics
      */
-    private void createNewGameAndBuildPetitions() throws Exception
+    private Map<?, ?> checkStatisticsIntegrityFromResponse(SystemResponse response)
     {
-        SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.createNewGame);
-
-        String gameID = petitionResponse.content().toString();
-        this.buildPetitionsForGame(gameID);
-    }
-
-    /**
-     * This method will parametrize all the mock petitions in order to point to the
-     * game resource identified by the supplied id
-     *
-     * @param gameID The ID of the game
-     */
-    private void buildPetitionsForGame(String gameID)
-    {
-        this.createNewRound = MockMvcRequestBuilders.patch(String.format("/game/%s/newRound", gameID));
-        this.restartGame = MockMvcRequestBuilders.patch(String.format("/game/%s/restart", gameID));
-
-    }
-
-    private Map<String,Integer> checkStatisticsIntegrityFromResponse(SystemResponse response)
-    {
-
         Assertions.assertTrue(response.content() instanceof Map, "The content should be a map");
-
-        Map<String,Integer> statisticsData = (Map<String, Integer>) response.content();
-
-
-        Assertions.assertEquals(4,statisticsData.keySet().size(), "The statistics map should contain 4 keys");
-
-        Assertions.assertTrue(statisticsData.containsKey(StatisticsResponseKeys.TOTAL_DRAWS.getKeyName()), "The total draws should be included");
-        Assertions.assertTrue(statisticsData.containsKey(StatisticsResponseKeys.TOTAL_PLAYER_ONE_WINS.getKeyName()), "The total wins of player one should be included");
-        Assertions.assertTrue(statisticsData.containsKey(StatisticsResponseKeys.TOTAL_PLAYER_TWO_WINS.getKeyName()), "The total wins of player two should be included");
-        Assertions.assertTrue(statisticsData.containsKey(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "The total rounds should be included");
-
+        Map<?, ?> statisticsData = (Map<?, ?>) response.content();
+        EnumerationCheckingUtils.checkIfEnumerationLiteralsAreInMap(statisticsData, StatisticsResponseKeys.values());
         return statisticsData;
     }
 }

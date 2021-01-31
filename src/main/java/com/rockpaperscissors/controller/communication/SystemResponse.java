@@ -1,6 +1,5 @@
 package com.rockpaperscissors.controller.communication;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,9 +24,7 @@ public record SystemResponse(
         @JsonProperty("content") Object content,
         @JsonProperty("error_message") String errorMessage)
 {
-    public SystemResponse
-    {
-    }
+
 
     public static SystemResponse generateSuccessResponse(Object content)
     {

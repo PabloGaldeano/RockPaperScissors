@@ -10,33 +10,34 @@ package com.rockpaperscissors.model.game;
 public enum MovementTypes
 {
     SCISSORS
-    {
-        @Override
-        public boolean beats(MovementTypes other)
-        {
-            return other == PAPER;
-        }
-    },
+            {
+                @Override
+                public boolean beats(MovementTypes other)
+                {
+                    return other == PAPER;
+                }
+            },
     ROCK
-    {
-        @Override
-        public boolean beats(MovementTypes other)
-        {
-            return other == SCISSORS;
-        }
-    },
+            {
+                @Override
+                public boolean beats(MovementTypes other)
+                {
+                    return other == SCISSORS;
+                }
+            },
     PAPER
-    {
-        @Override
-        public boolean beats(MovementTypes other)
-        {
-            return other == ROCK;
-        }
-    };
+            {
+                @Override
+                public boolean beats(MovementTypes other)
+                {
+                    return other == ROCK;
+                }
+            };
 
     /**
      * Method implemented by each literal to act as a shorthand to query
      * if one movement beats another one
+     *
      * @param other The movement to check
      * @return <code>true</code> if the movement receiving the message beats the one in the parameter, <code>false</code>
      * otherwise

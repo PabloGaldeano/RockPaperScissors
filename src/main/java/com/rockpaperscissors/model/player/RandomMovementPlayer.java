@@ -14,17 +14,16 @@ import java.security.SecureRandom;
 final public class RandomMovementPlayer implements IPlayer
 {
     /**
-     * This is the random generator to be used.
-     */
-    private final SecureRandom randomNumberGenerator;
-
-    /**
      * This is the total amount of available movements.
      * It is used as a bounds for the random generator and it is
      * static because it will be the same one for every instance
      * of the player. Also, it is saved to save couple of nanoseconds.
      */
     private static final int totalAmountOfMovements = MovementTypes.values().length;
+    /**
+     * This is the random generator to be used.
+     */
+    private final SecureRandom randomNumberGenerator;
 
     public RandomMovementPlayer()
     {

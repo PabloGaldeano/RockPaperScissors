@@ -4,7 +4,6 @@ import com.rockpaperscissors.model.game.MovementTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
@@ -13,6 +12,26 @@ import java.util.stream.Stream;
 
 class RandomMovementPlayerTest
 {
+
+    /**
+     * This method will provide the different parameters for the test {@link #generateMovement(MovementTypes, long, int)}
+     *
+     * @return A stream of different set of arguments to supply to the test
+     */
+    private static Stream<Arguments> provideParameters()
+    {
+        return Stream.of(
+                Arguments.of(MovementTypes.ROCK, 1000, 10000),
+                Arguments.of(MovementTypes.ROCK, 500, 5000),
+                Arguments.of(MovementTypes.ROCK, 750, 7500),
+                Arguments.of(MovementTypes.PAPER, 1000, 10000),
+                Arguments.of(MovementTypes.PAPER, 750, 7500),
+                Arguments.of(MovementTypes.PAPER, 500, 5000),
+                Arguments.of(MovementTypes.SCISSORS, 1000, 10000),
+                Arguments.of(MovementTypes.SCISSORS, 750, 7500),
+                Arguments.of(MovementTypes.SCISSORS, 500, 5000)
+        );
+    }
 
     /**
      * This method will do a simple check to make sure the {@link RandomMovementPlayer#performMovement()} ()} does not
@@ -49,29 +68,11 @@ class RandomMovementPlayerTest
                     .filter(typeToCheck::equals)
                     .count();
 
-            long ratio = numberOfMovementsToGenerate/accumulatedMatches;
+            // Simple entropy check
+            long ratio = numberOfMovementsToGenerate / accumulatedMatches;
             Assertions.assertTrue(ratio >= 2, "The ratio should be 2 or more");
 
         }
 
-    }
-
-    /**
-     * This method will provide the different parameters for the test {@link #generateMovement(MovementTypes, long, int)}
-     *
-     * @return A stream of different set of arguments to supply to the test
-     */
-    private static Stream<Arguments> provideParameters() {
-        return Stream.of(
-                Arguments.of(MovementTypes.ROCK, 1000,10000),
-                Arguments.of(MovementTypes.ROCK, 500,5000),
-                Arguments.of(MovementTypes.ROCK, 750,7500),
-                Arguments.of(MovementTypes.PAPER, 1000,10000),
-                Arguments.of(MovementTypes.PAPER, 750,7500),
-                Arguments.of(MovementTypes.PAPER, 500,5000),
-                Arguments.of(MovementTypes.SCISSORS, 1000,10000),
-                Arguments.of(MovementTypes.SCISSORS, 750,7500),
-                Arguments.of(MovementTypes.SCISSORS, 500,5000)
-        );
     }
 }

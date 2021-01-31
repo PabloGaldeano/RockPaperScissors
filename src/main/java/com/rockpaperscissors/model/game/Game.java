@@ -12,10 +12,9 @@ import java.util.List;
  * This is the class that models assembles a rock-paper-scissors game. It consists
  * of two implementations of the class {@link IPlayer}, a list of {@link Round}, its
  * unique identifier and several methods to access its properties as well as one method
- * {@link #playNewRound()} responsible of generating a new round.
- *
+ * {@link Game#playNewRound()} responsible of generating a new round.
+ * <p>
  * It uses the open-close and the single responsibility principles.
- *
  */
 public class Game
 {
@@ -31,9 +30,10 @@ public class Game
     /**
      * In order to construct a game, it is needed to supply both player implementation as well as
      * the ID.
+     *
      * @param playerOne The first player, can not be null
      * @param playerTwo The second player, can not be null
-     * @param gameID The ID of the game, can not be null
+     * @param gameID    The ID of the game, can not be null
      * @throws IllegalArgumentException when one of its parameter is null
      */
     public Game(IPlayer playerOne, IPlayer playerTwo, String gameID)
