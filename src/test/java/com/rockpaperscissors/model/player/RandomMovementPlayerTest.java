@@ -50,7 +50,7 @@ class RandomMovementPlayerTest
                     .count();
 
             long ratio = numberOfMovementsToGenerate/accumulatedMatches;
-            Assertions.assertTrue(ratio >= 2, "The ration should be 2 or more");
+            Assertions.assertTrue(ratio >= 2, "The ratio should be 2 or more");
 
         }
 

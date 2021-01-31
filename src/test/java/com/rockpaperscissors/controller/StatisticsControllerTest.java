@@ -39,10 +39,9 @@ class StatisticsControllerTest extends ControllerTestGeneric
 
         // Retrieving the game progress and checking its integrity
         SystemResponse petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
-        Map<String,String> statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
+        Map<String,Integer> statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-
-        Assertions.assertEquals(1, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
+        int  numberOfRounds = statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName());
 
         this.createNewGameAndBuildPetitions();
         this.executeMockPetitionAndExpectOK(this.createNewRound);
@@ -50,14 +49,16 @@ class StatisticsControllerTest extends ControllerTestGeneric
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
         statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-        Assertions.assertEquals(2, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
+        numberOfRounds++;
+
+        Assertions.assertEquals(numberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
 
         this.executeMockPetitionAndExpectOK(this.restartGame);
 
         petitionResponse = this.executeMockPetitionAndExpectOK(this.getGameStatistics);
         statisticsData = this.checkStatisticsIntegrityFromResponse(petitionResponse);
 
-        Assertions.assertEquals(2, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
+        Assertions.assertEquals(numberOfRounds, statisticsData.get(StatisticsResponseKeys.TOTAL_ROUNDS.getKeyName()), "There should be only one round");
 
     }
 
@@ -89,12 +90,12 @@ class StatisticsControllerTest extends ControllerTestGeneric
 
     }
 
-    private Map<String,String> checkStatisticsIntegrityFromResponse(SystemResponse response)
+    private Map<String,Integer> checkStatisticsIntegrityFromResponse(SystemResponse response)
     {
 
         Assertions.assertTrue(response.content() instanceof Map, "The content should be a map");
 
-        Map<String,String> statisticsData = (Map<String, String>) response.content();
+        Map<String,Integer> statisticsData = (Map<String, Integer>) response.content();
 
 
         Assertions.assertEquals(4,statisticsData.keySet().size(), "The statistics map should contain 4 keys");

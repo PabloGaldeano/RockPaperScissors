@@ -62,7 +62,7 @@ public class GameService
             this.gamesDatabase.delete(game);
         } catch (RecordNotFoundException ex)
         {
-            throw new GameNotFoundException(game);
+            throw new GameNotFoundException(game.getGameID());
         }
     }
 
